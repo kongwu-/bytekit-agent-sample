@@ -1,0 +1,54 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+
+
+plugins {
+    id 'java-library'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+shadowJar {
+    archiveBaseName.set('bytekit-agent')
+    archiveClassifier.set('')
+    archiveVersion.set('')
+
+    //resolve agent class conflict
+}
+
+group 'com.github.kongwu.issue'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'com.alibaba', name: 'bytekit-core', version: '0.0.4'
+
+    testImplementation group: 'org.springframework', name: 'spring-context', version: '5.3.6'
+
+}
+
+jar {
+    manifest {
+
+        attributes(
+                'Premain-Class': 'com.github.kongwu.issue.AgentBootstrap',
+                'Agent-Class': 'com.github.kongwu.issue.AgentBootstrap',
+                'Can-Redefine-Classes': 'true',
+                'Can-Retransform-Classes': 'true',
+                'Can-Set-Native-Method-Prefix': 'true',
+                'Implementation-Title': "AgentBootstrap",
+                'Implementation-Version': rootProject.version
+        )
+    }
+}
+
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
